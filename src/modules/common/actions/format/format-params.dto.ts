@@ -1,7 +1,7 @@
 import { Clirio, Param, Transform } from 'clirio';
 
 export class FormatParamsDto {
-  @Param('files')
+  @Param('patterns', { description: 'Glob patterns' })
   @Transform(Clirio.form.ARRAY)
-  readonly files!: string[];
+  readonly patterns!: string[];
 }

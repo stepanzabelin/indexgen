@@ -14,7 +14,7 @@ export class FormatService {
   ) {}
 
   public async entry(params: FormatParamsDto) {
-    const dirs = await glob(params.files, { ignore: 'node_modules/**' });
+    const dirs = await glob(params.patterns, { ignore: 'node_modules/**' });
 
     for (const dir of dirs) {
       const dirPath = path.resolve(process.cwd(), dir);

@@ -31,7 +31,7 @@ export class CommonModule {
     this.versionHelpService.entry();
   }
 
-  @Command('format <...files>')
+  @Command('format <...patterns>', { description: 'Formatting indexes' })
   public format(@Params() params: FormatParamsDto) {
     this.formatService.entry(params);
   }

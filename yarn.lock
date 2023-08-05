@@ -1668,9 +1668,9 @@ clear-module@^4.1.2:
     resolve-from "^5.0.0"
 
 clirio@^1.0.0:
-  version "1.0.0-alpha.4"
-  resolved "https://registry.yarnpkg.com/clirio/-/clirio-1.0.0-alpha.4.tgz#1d5325ff226233bb506050d884802fbfe9d1a96d"
-  integrity sha512-ggwtbCHCD/KEMW3mtks/MBi32a/eeZOL8z+iwNW3iUTI+mKRg3TEas94Vp9mo4l8T1qoVJIUFGw746I7Lg6V/g==
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/clirio/-/clirio-1.0.0.tgz#bd2c9a4916f9c364d24724923b8ab86cf1fda008"
+  integrity sha512-cZs9WYtZAWNEcAHrhNV+kSWnV4nuPVn+xtKT2zsu84Dzw+Zrmb8DzkdSgsUm3apEbnEvru6LQsZHi0RCnJgv1A==
   dependencies:
     reflect-metadata "^0.1.13"
 
