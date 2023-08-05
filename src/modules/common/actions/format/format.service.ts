@@ -27,7 +27,11 @@ export class FormatService {
         continue;
       }
 
-      const indexgenParams = await this.indexGenService.safeRead(dirPath);
+      const indexgenParams = await this.indexGenService
+        .safeRead(dirPath)
+        .then((params) =>
+          params ? { sealed: false, format: 'default', ...params } : null,
+        );
 
       if (!indexgenParams || indexgenParams.sealed) {
         continue;

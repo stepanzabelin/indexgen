@@ -5,6 +5,8 @@ import { VersionHelpService } from './actions/version-help';
 import { FormatService, FormatParamsDto } from './actions/format';
 import { AddService, AddParamsDto } from './actions/add';
 import { RemoveService, RemoveParamsDto } from './actions/remove';
+import { SealService, SealParamsDto } from './actions/seal';
+import { UnsealService, UnsealParamsDto } from './actions/unseal';
 
 @Module()
 @injectable()
@@ -13,9 +15,10 @@ export class CommonModule {
     private readonly commonHelpService: CommonHelpService,
     private readonly versionHelpService: VersionHelpService,
     private readonly formatService: FormatService,
-
+    private readonly sealService: SealService,
     private readonly addService: AddService,
     private readonly removeService: RemoveService,
+    private readonly unsealService: UnsealService,
   ) {}
 
   @Command('-h, --help', { hidden: true })
@@ -26,6 +29,11 @@ export class CommonModule {
   @Command('-v, --version')
   public version() {
     this.versionHelpService.entry();
+  }
+
+  @Command('format <...files>')
+  public format(@Params() params: FormatParamsDto) {
+    this.formatService.entry(params);
   }
 
   @Command('add <path>')
@@ -39,17 +47,12 @@ export class CommonModule {
   }
 
   @Command('seal <path>')
-  public enable(@Params() params: FormatParamsDto) {
-    this.formatService.entry(params);
+  public enable(@Params() params: SealParamsDto) {
+    this.sealService.entry(params);
   }
 
   @Command('unseal <path>')
-  public disable(@Params() params: FormatParamsDto) {
-    this.formatService.entry(params);
-  }
-
-  @Command('format <...files>')
-  public format(@Params() params: FormatParamsDto) {
-    this.formatService.entry(params);
+  public disable(@Params() params: UnsealParamsDto) {
+    this.unsealService.entry(params);
   }
 }

@@ -17,7 +17,7 @@ export class IndexGenService {
     return exists;
   }
 
-  public async safeRead(dirPath: string) {
+  public async safeRead(dirPath: string): Promise<Record<string, any> | null> {
     const exists = await this.exists(dirPath);
     if (!exists) {
       return null;
@@ -25,7 +25,7 @@ export class IndexGenService {
 
     const params = await this.read(dirPath);
 
-    return { sealed: false, format: 'default', ...params };
+    return { ...params };
   }
 
   public async read(dirPath: string) {
@@ -35,7 +35,13 @@ export class IndexGenService {
   }
 
   public async write(dirPath: string, params: any) {
-    await writeFile(this.toFilePath(dirPath), toml.stringify(params), 'utf8');
+    await writeFile(
+      this.toFilePath(dirPath),
+      toml.stringify(params, {
+        newline: '\n',
+      }),
+      'utf8',
+    );
   }
 
   public async remove(dirPath: string) {

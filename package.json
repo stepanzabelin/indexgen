@@ -11,17 +11,7 @@
     "indexgen": "./build/main/cli.js"
   },
   "keywords": [
-    "cli",
-    "console",
-    "command",
-    "option",
-    "parser",
-    "argument",
-    "args",
-    "argv",
-    "terminal",
-    "shell",
-    "interface"
+    "lint"
   ],
   "author": "Stepan Zabelin",
   "scripts": {
