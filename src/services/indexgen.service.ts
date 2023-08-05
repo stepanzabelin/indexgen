@@ -28,7 +28,7 @@ export class IndexGenService {
     return { ...params };
   }
 
-  public async read(dirPath: string) {
+  public async read(dirPath: string): Promise<any> {
     const contents = await readFile(this.toFilePath(dirPath), 'utf8');
 
     return toml.parse(contents);
