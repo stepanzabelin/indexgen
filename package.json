@@ -1,11 +1,11 @@
 {
   "name": "indexier",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Index Exports Generator",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
   "module": "build/module/index.js",
-  "repository": "https://github.com/stepanzabelin/indexier",
+  "repository": "git@github.com:stepanzabelin/indexier.git",
   "license": "MIT",
   "bin": {
     "indexier": "./build/main/cli.js"
@@ -44,7 +44,8 @@
     "joi-class-decorators": "^1.1.0",
     "mathjs": "^11.8.2",
     "reflect-metadata": "^0.1.13",
-    "tsyringe": "^4.8.0"
+    "tsyringe": "^4.8.0",
+    "clirio": "^1.0.0"
   },
   "devDependencies": {
     "@types/jest": "^27.4.0",
@@ -52,7 +53,6 @@
     "@types/sinon": "^10.0.6",
     "@typescript-eslint/eslint-plugin": "^5.54.1",
     "@typescript-eslint/parser": "^5.54.1",
-    "clirio": "^1.0.0",
     "cspell": "^6.31.1",
     "eslint": "^8.44.0",
     "eslint-config-prettier": "^6.11.0",
