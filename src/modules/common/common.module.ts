@@ -4,6 +4,7 @@ import { CommonHelpService } from './actions/common-help';
 import { VersionHelpService } from './actions/version-help';
 import { FormatService, FormatParamsDto } from './actions/format';
 import { AddService, AddParamsDto } from './actions/add';
+import { RemoveService, RemoveParamsDto } from './actions/remove';
 
 @Module()
 @injectable()
@@ -12,7 +13,9 @@ export class CommonModule {
     private readonly commonHelpService: CommonHelpService,
     private readonly versionHelpService: VersionHelpService,
     private readonly formatService: FormatService,
+
     private readonly addService: AddService,
+    private readonly removeService: RemoveService,
   ) {}
 
   @Command('-h, --help', { hidden: true })
@@ -31,8 +34,8 @@ export class CommonModule {
   }
 
   @Command('remove <path>')
-  public remove(@Params() params: FormatParamsDto) {
-    this.formatService.entry(params);
+  public remove(@Params() params: RemoveParamsDto) {
+    this.removeService.entry(params);
   }
 
   @Command('seal <path>')

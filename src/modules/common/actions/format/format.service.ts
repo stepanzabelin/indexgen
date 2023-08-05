@@ -59,8 +59,10 @@ export class FormatService {
         }
 
         await writeFile(indexFilePath, indexContents, 'utf8');
+        this.resultService.success('Updated');
       } else {
         await unlink(indexFilePath).catch(() => null);
+        this.resultService.success('Removed');
       }
     }
   }

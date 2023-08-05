@@ -3,16 +3,16 @@ import { lstat } from 'fs/promises';
 import path from 'path';
 
 import { IndexGenService, ResultService } from '../../../../services';
-import { AddParamsDto } from './add-params.dto';
+import { RemoveParamsDto } from './remove-params.dto';
 
 @injectable()
-export class AddService {
+export class RemoveService {
   constructor(
     private readonly resultService: ResultService,
     private readonly indexGenService: IndexGenService,
   ) {}
 
-  public async entry(params: AddParamsDto) {
+  public async entry(params: RemoveParamsDto) {
     const dirPath = path.resolve(process.cwd(), params.path);
 
     const isDir = await lstat(dirPath)
@@ -25,11 +25,11 @@ export class AddService {
 
     const exists = await this.indexGenService.exists(dirPath);
 
-    if (!exists) {
-      await this.indexGenService.write(dirPath, {});
-      this.resultService.success('Added');
+    if (exists) {
+      await this.indexGenService.remove(dirPath);
+      this.resultService.success('Removed');
     } else {
-      this.resultService.warn('Exists');
+      this.resultService.warn('does not exist');
     }
   }
 }
