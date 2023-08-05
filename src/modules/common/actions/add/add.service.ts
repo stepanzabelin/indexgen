@@ -2,14 +2,14 @@ import { injectable } from 'tsyringe';
 import { lstat } from 'fs/promises';
 import path from 'path';
 
-import { IndexGenService, ResultService } from '../../../../services';
+import { IndexierService, ResultService } from '../../../../services';
 import { AddParamsDto } from './add-params.dto';
 
 @injectable()
 export class AddService {
   constructor(
     private readonly resultService: ResultService,
-    private readonly indexGenService: IndexGenService,
+    private readonly indexierService: IndexierService,
   ) {}
 
   public async entry(params: AddParamsDto) {
@@ -23,16 +23,16 @@ export class AddService {
       throw new Error(`dirPath is not dir`);
     }
 
-    const exists = await this.indexGenService.exists(dirPath);
+    const exists = await this.indexierService.exists(dirPath);
 
     if (!exists) {
-      await this.indexGenService.write(dirPath, {});
+      await this.indexierService.write(dirPath, {});
       this.resultService.success(
-        `Added: ${this.indexGenService.toFilePath(dirPath)}`,
+        `Added: ${this.indexierService.toFilePath(dirPath)}`,
       );
     } else {
       this.resultService.warn(
-        `Exists: ${this.indexGenService.toFilePath(dirPath)}`,
+        `Exists: ${this.indexierService.toFilePath(dirPath)}`,
       );
     }
   }

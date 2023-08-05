@@ -2,14 +2,14 @@ import { injectable } from 'tsyringe';
 import { lstat } from 'fs/promises';
 import path from 'path';
 
-import { IndexGenService, ResultService } from '../../../../services';
+import { IndexierService, ResultService } from '../../../../services';
 import { RemoveParamsDto } from './remove-params.dto';
 
 @injectable()
 export class RemoveService {
   constructor(
     private readonly resultService: ResultService,
-    private readonly indexGenService: IndexGenService,
+    private readonly indexierService: IndexierService,
   ) {}
 
   public async entry(params: RemoveParamsDto) {
@@ -23,10 +23,10 @@ export class RemoveService {
       throw new Error(`dirPath is not dir`);
     }
 
-    const exists = await this.indexGenService.exists(dirPath);
+    const exists = await this.indexierService.exists(dirPath);
 
     if (exists) {
-      await this.indexGenService.remove(dirPath);
+      await this.indexierService.remove(dirPath);
       this.resultService.success('Removed');
     } else {
       this.resultService.warn('does not exist');

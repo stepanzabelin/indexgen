@@ -2,14 +2,14 @@ import { injectable } from 'tsyringe';
 import { lstat } from 'fs/promises';
 import path from 'path';
 
-import { IndexGenService, ResultService } from '../../../../services';
+import { IndexierService, ResultService } from '../../../../services';
 import { UnsealParamsDto } from './unseal-params.dto';
 
 @injectable()
 export class UnsealService {
   constructor(
     private readonly resultService: ResultService,
-    private readonly indexGenService: IndexGenService,
+    private readonly indexierService: IndexierService,
   ) {}
 
   public async entry(params: UnsealParamsDto) {
@@ -23,15 +23,15 @@ export class UnsealService {
       throw new Error(`dirPath is not dir`);
     }
 
-    const indexgenParams = await this.indexGenService.safeRead(dirPath);
+    const indexierParams = await this.indexierService.safeRead(dirPath);
 
-    await this.indexGenService.write(dirPath, {
-      ...(indexgenParams ?? {}),
+    await this.indexierService.write(dirPath, {
+      ...(indexierParams ?? {}),
       sealed: false,
     });
 
     this.resultService.success(
-      `Updated: ${this.indexGenService.toFilePath(dirPath)}`,
+      `Updated: ${this.indexierService.toFilePath(dirPath)}`,
     );
   }
 }

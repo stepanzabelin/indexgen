@@ -4,9 +4,9 @@ import * as toml from '@ltd/j-toml';
 import { access, readFile, writeFile, unlink } from 'fs/promises';
 
 @injectable()
-export class IndexGenService {
+export class IndexierService {
   public toFilePath(dirPath: string) {
-    return path.join(dirPath, '.indexgen');
+    return path.join(dirPath, '.indexier');
   }
 
   public async exists(dirPath: string) {

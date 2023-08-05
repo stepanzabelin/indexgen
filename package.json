@@ -1,14 +1,14 @@
 {
-  "name": "indexgen",
-  "version": "0.0.0",
+  "name": "indexier",
+  "version": "0.0.1",
   "description": "Index Exports Generator",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
   "module": "build/module/index.js",
-  "repository": "git@github.com:stepanzabelin/indexgen.git",
+  "repository": "https://github.com/stepanzabelin/indexier",
   "license": "MIT",
   "bin": {
-    "indexgen": "./build/main/cli.js"
+    "indexier": "./build/main/cli.js"
   },
   "keywords": [
     "lint"

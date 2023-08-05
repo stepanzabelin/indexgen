@@ -3,14 +3,14 @@ import { lstat, readdir, writeFile, unlink } from 'fs/promises';
 import path from 'path';
 import { glob } from 'glob';
 
-import { IndexGenService, ResultService } from '../../../../services';
+import { IndexierService, ResultService } from '../../../../services';
 import { FormatParamsDto } from './format-params.dto';
 
 @injectable()
 export class FormatService {
   constructor(
     private readonly resultService: ResultService,
-    private readonly indexGenService: IndexGenService,
+    private readonly indexierService: IndexierService,
   ) {}
 
   public async entry(params: FormatParamsDto) {
@@ -27,13 +27,13 @@ export class FormatService {
         continue;
       }
 
-      const indexgenParams = await this.indexGenService
+      const indexierParams = await this.indexierService
         .safeRead(dirPath)
         .then((params) =>
           params ? { sealed: false, format: 'default', ...params } : null,
         );
 
-      if (!indexgenParams || indexgenParams.sealed) {
+      if (!indexierParams || indexierParams.sealed) {
         continue;
       }
 
