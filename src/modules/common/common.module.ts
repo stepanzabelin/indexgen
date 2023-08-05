@@ -3,6 +3,7 @@ import { injectable } from 'tsyringe';
 import { CommonHelpService } from './actions/common-help';
 import { VersionHelpService } from './actions/version-help';
 import { FormatService, FormatParamsDto } from './actions/format';
+import { AddService, AddParamsDto } from './actions/add';
 
 @Module()
 @injectable()
@@ -11,6 +12,7 @@ export class CommonModule {
     private readonly commonHelpService: CommonHelpService,
     private readonly versionHelpService: VersionHelpService,
     private readonly formatService: FormatService,
+    private readonly addService: AddService,
   ) {}
 
   @Command('-h, --help', { hidden: true })
@@ -24,8 +26,8 @@ export class CommonModule {
   }
 
   @Command('add <path>')
-  public add(@Params() params: FormatParamsDto) {
-    this.formatService.entry(params);
+  public add(@Params() params: AddParamsDto) {
+    this.addService.entry(params);
   }
 
   @Command('remove <path>')
@@ -45,11 +47,6 @@ export class CommonModule {
 
   @Command('format <...files>')
   public format(@Params() params: FormatParamsDto) {
-    this.formatService.entry(params);
-  }
-
-  @Command('check <...files>')
-  public check(@Params() params: FormatParamsDto) {
     this.formatService.entry(params);
   }
 }

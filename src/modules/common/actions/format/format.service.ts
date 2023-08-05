@@ -1,22 +1,17 @@
 import { injectable } from 'tsyringe';
-import {
-  lstat,
-  access,
-  readFile,
-  readdir,
-  writeFile,
-  unlink,
-} from 'fs/promises';
+import { lstat, readdir, writeFile, unlink } from 'fs/promises';
 import path from 'path';
 import { glob } from 'glob';
-import toml from 'toml';
 
-import { ResultService } from '../../../../services';
+import { IndexGenService, ResultService } from '../../../../services';
 import { FormatParamsDto } from './format-params.dto';
 
 @injectable()
 export class FormatService {
-  constructor(private readonly resultService: ResultService) {}
+  constructor(
+    private readonly resultService: ResultService,
+    private readonly indexGenService: IndexGenService,
+  ) {}
 
   public async entry(params: FormatParamsDto) {
     const dirs = await glob(params.files, { ignore: 'node_modules/**' });
@@ -32,18 +27,17 @@ export class FormatService {
         continue;
       }
 
-      const indexgenParams = await this.safeReadDirIngexgen(dirPath);
+      const indexgenParams = await this.indexGenService.safeRead(dirPath);
 
-      if (!indexgenParams) {
+      if (!indexgenParams || indexgenParams.sealed) {
         continue;
       }
 
       const files = await readdir(dirPath);
+
       const refs = [];
 
       for (const file of files) {
-        const filepath = path.join(dirPath, file);
-
         if (file === 'index.ts') {
           continue;
         }
@@ -68,40 +62,6 @@ export class FormatService {
       } else {
         await unlink(indexFilePath).catch(() => null);
       }
-
-      console.log('dirPath', dirPath);
     }
-  }
-
-  public resolveIngexgen(dirPath: string) {
-    return path.join(dirPath, '.indexgen');
-  }
-
-  public async existsDirIngexgen(dirPath: string) {
-    const exists = await access(this.resolveIngexgen(dirPath))
-      .then(() => true)
-      .catch(() => false);
-
-    return exists;
-  }
-
-  public async safeReadDirIngexgen(dirPath: string) {
-    const exists = await this.existsDirIngexgen(dirPath);
-    if (!exists) {
-      return null;
-    }
-
-    const params = await this.readDirIngexgen(dirPath);
-
-    return { sealed: false, format: 'default', ...params };
-  }
-
-  public async readDirIngexgen(dirPath: string) {
-    const contents = await readFile(
-      path.resolve(this.resolveIngexgen(dirPath)),
-      'utf8',
-    );
-
-    return toml.parse(contents);
   }
 }

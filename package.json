@@ -30,9 +30,9 @@
     "build:module": "tsc -p tsconfig.module.json",
     "watch:build": "tsc -p tsconfig.json -w",
     "fix:prettier": "prettier --write \"./{src,tests}/**/*.ts\"",
-    "fix:eslint": "eslint \"./src/**/*.ts\" \"./tests/**/*.ts\" -c .eslintrc-final.json --fix",
+    "fix:eslint": "eslint \"./{src,tests}/**/*.ts\" -c .eslintrc-final.json --fix",
     "fix": "run-s fix:*",
-    "test:eslint": "eslint \"./src/**/*.ts\" \"./tests/**/*.ts\"  --quiet -c .eslintrc-final.json",
+    "test:eslint": "eslint \"./{src,tests}/**/*.ts\"  --quiet -c .eslintrc-final.json",
     "test:typescript": "tsc -p tsconfig.json --noEmit",
     "test:cspell": "cspell \"{./**/*.js,./**/*.ts}\" --no-progress",
     "test:unit": "jest --silent=false --bail",
@@ -47,13 +47,13 @@
     "node": ">=12"
   },
   "dependencies": {
+    "@ltd/j-toml": "^1.38.0",
     "chalk": "^2.4.2",
     "glob": "^10.3.3",
     "joi": "^17.9.2",
     "joi-class-decorators": "^1.1.0",
     "mathjs": "^11.8.2",
     "reflect-metadata": "^0.1.13",
-    "toml": "^3.0.0",
     "tsyringe": "^4.8.0"
   },
   "devDependencies": {
