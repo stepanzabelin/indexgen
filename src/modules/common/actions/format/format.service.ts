@@ -3,71 +3,85 @@ import { lstat, readdir, writeFile, unlink } from 'fs/promises';
 import path from 'path';
 import { glob } from 'glob';
 
-import { IndexierService, ResultService } from '../../../../services';
-import { FormatParamsDto } from './format-params.dto';
+import { ResultService, ConfigService } from '../../../../services';
+
+import { FormatOptionsDto } from './format-options.dto';
 
 @injectable()
 export class FormatService {
   constructor(
     private readonly resultService: ResultService,
-    private readonly indexierService: IndexierService,
+    private readonly configService: ConfigService,
   ) {}
 
-  public async entry(params: FormatParamsDto) {
-    const dirs = await glob(params.patterns, { ignore: 'node_modules/**' });
+  public async entry(options: FormatOptionsDto) {
+    const config = await this.configService.get();
+    const affectedDirSet = new Set();
 
-    for (const dir of dirs) {
-      const dirPath = path.resolve(process.cwd(), dir);
+    for (const rule of config.rules) {
+      const dirs = await glob(rule.include, {
+        ignore: rule.exclude,
+      });
 
-      const isDir = await lstat(dirPath)
-        .then((stat) => stat.isDirectory())
-        .catch(() => false);
+      for (const dir of dirs) {
+        const dirPath = path.resolve(process.cwd(), dir);
 
-      if (!isDir) {
-        continue;
-      }
-
-      const indexierParams = await this.indexierService
-        .safeRead(dirPath)
-        .then((params) =>
-          params ? { sealed: false, format: 'default', ...params } : null,
-        );
-
-      if (!indexierParams || indexierParams.sealed) {
-        continue;
-      }
-
-      const files = await readdir(dirPath);
-
-      const refs = [];
-
-      for (const file of files) {
-        if (file === 'index.ts') {
+        if (affectedDirSet.has(dirPath)) {
           continue;
         }
 
-        const match = file.match(/^(.*?)\.ts$/);
+        affectedDirSet.add(dirPath);
 
-        if (match) {
-          refs.push(match[1]);
-        }
-      }
+        const isDir = await lstat(dirPath)
+          .then((stat) => stat.isDirectory())
+          .catch(() => false);
 
-      const indexFilePath = path.join(dirPath, 'index.ts');
-
-      if (refs.length) {
-        let indexContents = '';
-
-        for (const ref of refs) {
-          indexContents += `export * from './${ref}';\n`;
+        if (!isDir) {
+          continue;
         }
 
-        await writeFile(indexFilePath, indexContents, 'utf8');
-        this.resultService.success('Updated');
-      } else {
-        await unlink(indexFilePath).catch(() => null);
-        this.resultService.success('Removed');
+        const files = await readdir(dirPath);
+        const refs = [];
+        for (const file of files) {
+          const filepath = path.join(dir, file);
+
+          const stats = await lstat(filepath);
+
+          if (stats.isDirectory() && rule.folders) {
+            refs.push(file);
+          }
+
+          if (stats.isFile() && rule.files) {
+            refs.push(file);
+          }
+
+          if (file === 'index.ts') {
+            continue;
+          }
+
+          const match = file.match(/^(.*?)\.ts$/);
+
+          if (match) {
+            refs.push(match[1]);
+          }
+        }
+
+        const indexFilePath = path.join(dirPath, 'index.ts');
+
+        if (refs.length) {
+          let indexContents = '';
+
+          for (const ref of refs) {
+            indexContents += `export * from './${ref}';\n`;
+          }
+
+          await writeFile(indexFilePath, indexContents, 'utf8');
+        } else {
+          await unlink(indexFilePath).catch(() => null);
+        }
       }
     }
+
+    this.resultService.success('done');
   }
 }

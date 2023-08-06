@@ -1,12 +1,12 @@
-import { ClirioHelper, Command, Helper, Module, Params } from 'clirio';
+import { ClirioHelper, Command, Helper, Module, Options } from 'clirio';
 import { injectable } from 'tsyringe';
 import { CommonHelpService } from './actions/common-help';
 import { VersionHelpService } from './actions/version-help';
-import { FormatService, FormatParamsDto } from './actions/format';
-import { AddService, AddParamsDto } from './actions/add';
-import { RemoveService, RemoveParamsDto } from './actions/remove';
-import { SealService, SealParamsDto } from './actions/seal';
-import { UnsealService, UnsealParamsDto } from './actions/unseal';
+import { FormatService, FormatOptionsDto } from './actions/format';
+import { AddService } from './actions/add';
+import { RemoveService } from './actions/remove';
+import { SealService } from './actions/seal';
+import { UnsealService } from './actions/unseal';
 
 @Module()
 @injectable()
@@ -31,28 +31,28 @@ export class CommonModule {
     this.versionHelpService.entry();
   }
 
-  @Command('format <...patterns>', { description: 'Formatting indexes' })
-  public format(@Params() params: FormatParamsDto) {
-    this.formatService.entry(params);
+  @Command('format', { description: 'Formatting' })
+  public format(@Options() options: FormatOptionsDto) {
+    this.formatService.entry(options);
   }
 
-  @Command('add <path>')
-  public add(@Params() params: AddParamsDto) {
-    this.addService.entry(params);
-  }
+  // @Command('create rule')
+  // public add(@Params() params: AddParamsDto) {
+  //   this.addService.entry(params);
+  // }
 
-  @Command('remove <path>')
-  public remove(@Params() params: RemoveParamsDto) {
-    this.removeService.entry(params);
-  }
+  // @Command('create rule')
+  // public remove(@Params() params: RemoveParamsDto) {
+  //   this.removeService.entry(params);
+  // }
 
-  @Command('seal <path>')
-  public enable(@Params() params: SealParamsDto) {
-    this.sealService.entry(params);
-  }
+  // @Command('seal <path>')
+  // public enable(@Params() params: SealParamsDto) {
+  //   this.sealService.entry(params);
+  // }
 
-  @Command('unseal <path>')
-  public disable(@Params() params: UnsealParamsDto) {
-    this.unsealService.entry(params);
-  }
+  // @Command('unseal <path>')
+  // public disable(@Params() params: UnsealParamsDto) {
+  //   this.unsealService.entry(params);
+  // }
 }
