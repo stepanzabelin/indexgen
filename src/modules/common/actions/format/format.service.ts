@@ -2,9 +2,8 @@ import { injectable } from 'tsyringe';
 import { lstat, readdir, writeFile, unlink } from 'fs/promises';
 import path from 'path';
 import { glob } from 'glob';
-
+import { configRuleItem } from '../../../../config';
 import { ResultService, ConfigService } from '../../../../services';
-
 import { FormatOptionsDto } from './format-options.dto';
 
 @injectable()
@@ -18,7 +17,9 @@ export class FormatService {
     const config = await this.configService.get();
     const affectedDirSet = new Set();
 
-    for (const rule of config.rules) {
+    for (const partialRule of config.rules) {
+      const rule = { ...configRuleItem, ...partialRule };
+
       const dirs = await glob(rule.include, {
         ignore: rule.exclude,
       });
@@ -30,8 +31,6 @@ export class FormatService {
           continue;
         }
 
-        affectedDirSet.add(dirPath);
-
         const isDir = await lstat(dirPath)
           .then((stat) => stat.isDirectory())
           .catch(() => false);
@@ -40,8 +39,11 @@ export class FormatService {
           continue;
         }
 
+        affectedDirSet.add(dirPath);
+
         const files = await readdir(dirPath);
         const refs = [];
+
         for (const file of files) {
           const filepath = path.join(dir, file);
 
@@ -52,17 +54,15 @@ export class FormatService {
           }
 
           if (stats.isFile() && rule.files) {
-            refs.push(file);
-          }
+            if (file === 'index.ts') {
+              continue;
+            }
 
-          if (file === 'index.ts') {
-            continue;
-          }
+            const match = file.match(/^(.*?)\.ts$/);
 
-          const match = file.match(/^(.*?)\.ts$/);
-
-          if (match) {
-            refs.push(match[1]);
+            if (match) {
+              refs.push(match[1]);
+            }
           }
         }
 

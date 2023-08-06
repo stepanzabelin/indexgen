@@ -5,8 +5,7 @@ import { VersionHelpService } from './actions/version-help';
 import { FormatService, FormatOptionsDto } from './actions/format';
 import { AddService } from './actions/add';
 import { RemoveService } from './actions/remove';
-import { SealService } from './actions/seal';
-import { UnsealService } from './actions/unseal';
+import { DebugOptionsDto, DebugService } from './actions/debug';
 
 @Module()
 @injectable()
@@ -15,10 +14,9 @@ export class CommonModule {
     private readonly commonHelpService: CommonHelpService,
     private readonly versionHelpService: VersionHelpService,
     private readonly formatService: FormatService,
-    private readonly sealService: SealService,
+    private readonly debugService: DebugService,
     private readonly addService: AddService,
     private readonly removeService: RemoveService,
-    private readonly unsealService: UnsealService,
   ) {}
 
   @Command('-h, --help', { hidden: true })
@@ -46,13 +44,8 @@ export class CommonModule {
   //   this.removeService.entry(params);
   // }
 
-  // @Command('seal <path>')
-  // public enable(@Params() params: SealParamsDto) {
-  //   this.sealService.entry(params);
-  // }
-
-  // @Command('unseal <path>')
-  // public disable(@Params() params: UnsealParamsDto) {
-  //   this.unsealService.entry(params);
-  // }
+  @Command('debug')
+  public enable(@Options() options: DebugOptionsDto) {
+    this.debugService.entry(options);
+  }
 }

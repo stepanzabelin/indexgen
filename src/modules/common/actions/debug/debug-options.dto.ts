@@ -1,6 +1,6 @@
 import { Param } from 'clirio';
 
-export class UnsealParamsDto {
+export class DebugOptionsDto {
   @Param('path')
   readonly path!: string;
 }
