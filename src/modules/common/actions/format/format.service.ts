@@ -1,5 +1,5 @@
 import { injectable } from 'tsyringe';
-import { lstat, readdir, writeFile, unlink } from 'fs/promises';
+import { lstat, writeFile, unlink } from 'fs/promises';
 import path from 'path';
 import { glob } from 'glob';
 import { configRuleItem } from '../../../../config';
@@ -41,24 +41,32 @@ export class FormatService {
 
         affectedDirSet.add(dirPath);
 
-        const files = await readdir(dirPath);
+        const patterns = Array.isArray(rule.exportPattern)
+          ? rule.exportPattern
+          : [rule.exportPattern];
+
+        const exports = await glob(patterns, {
+          cwd: dirPath,
+          ignore: rule.exportIgnore,
+        });
+
         const refs = [];
 
-        for (const file of files) {
-          const filepath = path.join(dir, file);
+        for (const name of exports) {
+          const filepath = path.join(dir, name);
 
           const stats = await lstat(filepath);
 
-          if (stats.isDirectory() && rule.folders) {
-            refs.push(file);
+          if (stats.isDirectory() && rule.exportDirs) {
+            refs.push(name);
           }
 
-          if (stats.isFile() && rule.files) {
-            if (file === 'index.ts') {
+          if (stats.isFile() && rule.exportFiles) {
+            if (name === 'index.ts') {
               continue;
             }
 
-            const match = file.match(/^(.*?)\.ts$/);
+            const match = name.match(/^(.*?)\.ts$/);
 
             if (match) {
               refs.push(match[1]);

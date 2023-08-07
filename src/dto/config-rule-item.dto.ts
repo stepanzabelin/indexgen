@@ -2,18 +2,40 @@ import Joi from 'joi';
 import { JoiSchema } from 'joi-class-decorators';
 
 export class ConfigRuleItemDto {
-  @JoiSchema(Joi.string().valid('re-export', 'common').optional())
-  readonly format?: 're-export' | 'common';
+  @JoiSchema(
+    Joi.alternatives()
+      .try(Joi.array().items(Joi.string()), Joi.string())
+      .required(),
+  )
+  readonly include!: string | string[];
 
-  @JoiSchema(Joi.array().items(Joi.string()).optional())
-  readonly include!: string[];
+  @JoiSchema(
+    Joi.alternatives()
+      .try(Joi.array().items(Joi.string()), Joi.string())
+      .optional(),
+  )
+  readonly exclude?: string | string[];
 
-  @JoiSchema(Joi.array().items(Joi.string()).optional())
-  readonly exclude?: string[];
+  @JoiSchema(Joi.string().valid('ts-re-export', 'js-common').optional())
+  readonly exportFormat?: 'ts-re-export' | 'js-common';
+
+  @JoiSchema(
+    Joi.alternatives()
+      .try(Joi.array().items(Joi.string()), Joi.string())
+      .optional(),
+  )
+  readonly exportPattern?: string | string[];
+
+  @JoiSchema(
+    Joi.alternatives()
+      .try(Joi.array().items(Joi.string()), Joi.string())
+      .optional(),
+  )
+  readonly exportIgnore?: string | string[];
 
   @JoiSchema(Joi.boolean().optional())
-  readonly files?: boolean;
+  readonly exportDirs?: boolean;
 
   @JoiSchema(Joi.boolean().optional())
-  readonly folders?: boolean;
+  readonly exportFiles?: boolean;
 }

@@ -1,9 +1,11 @@
 {
     "rules": [
         {
-            "include": [
-                "ytest"
-            ]
+            "include": "ytest",
+            "exportFormat": "ts-re-export",
+            "exportPattern": "**/*.*",
+            "exportIgnore": "*.spec.ts",
+            "exportDirs": false
         }
     ]
 }
